@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="EComm" target="19" />
+      <module name="EComm" target="0" />
     </bytecodeTargetLevel>
   </component>
 </project>
