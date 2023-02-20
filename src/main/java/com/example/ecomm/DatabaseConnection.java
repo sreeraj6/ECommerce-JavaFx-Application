@@ -32,6 +32,18 @@ public class DatabaseConnection {
         return null;
     }
 
+    public boolean insertUpdate(String query){
+        Statement statement = getStatement();
+        try {
+            statement.executeUpdate(query);
+            return true;
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 //    public static void main(String[] args) {
 //        String Query = "SELECT * FROM products";
 //        DatabaseConnection db = new DatabaseConnection();

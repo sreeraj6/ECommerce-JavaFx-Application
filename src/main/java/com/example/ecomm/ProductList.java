@@ -24,24 +24,30 @@ public class ProductList {
         TableColumn price = new TableColumn("Price");
         price.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        ObservableList<Product> data = FXCollections.observableArrayList();
-        data.addAll(new Product(123,"Laptop",(double)2342.05),
-                new Product(123,"Laptop",(double)234.4),
-                new Product(223,"Laptop",(double)2342.05),
-                new Product(323,"Laptop",(double)2342.05),
-                new Product(423,"Laptop",(double)2342.05)
 
-                );
+
+        ObservableList<Product> data = FXCollections.observableArrayList();
+
+
+        ObservableList<Product> productList = Product.getAllProducts();
+        data.addAll(new Product(123,"Laptop",(double)2342.05),
+                new Product(123,"Laptop",(double)234.4)
+        );
 
 
         productTable = new TableView<>();
-        productTable.setItems(data);
+        productTable.setItems(productList);
         productTable.getColumns().addAll(id,name,price);
 
         Pane TablePane = new Pane();
         TablePane.getChildren().add(productTable);
 
         return TablePane;
+    }
+
+    public Product getSelectedProduct(){
+
+        return productTable.getSelectionModel().getSelectedItem();
     }
 
 }

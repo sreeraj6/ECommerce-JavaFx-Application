@@ -5,10 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -17,18 +14,46 @@ import java.io.IOException;
 
 public class Ecommerce extends Application {
 
+    private final int width = 500, height = 400, headerLine = 50;
+
     ProductList productList = new ProductList();
+    Pane bodyPane;
+
+    Button signInButton = new Button("Sign in");
+    Label welcomeLabel = new Label("Welcome Customer");
+
+    Customer loggedInCustomer = null;
+
     private GridPane headerBar(){
         GridPane header = new GridPane();
 
         //put search area and button
         TextField searchBar = new TextField();
         Button searchButton = new Button("Search");
+        header.setHgap(10);
+        searchButton.setOnAction(new EventHandler <ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                bodyPane.getChildren().clear();
+                bodyPane.getChildren().add(productList.getAllProducts());
+            }
+        });
+
+        signInButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                bodyPane.getChildren().clear();
+                bodyPane.getChildren().add(loginPanel());
+            }
+        });
+
+        header.setVgap(10);
 
         //set position in the grid
         header.add(searchBar,0,0);
         header.add(searchButton,1,0);
-
+        header.add(signInButton,2,0);
+        header.add(welcomeLabel,3,0);
         return header;
     }
 
@@ -50,9 +75,11 @@ public class Ecommerce extends Application {
             public void handle(ActionEvent actionEvent) {
                 String user = username.getText();
                 String pass = password.getText();
+                loggedInCustomer = Login.customerLogin(user,pass);
 
-                if(Login.customerLogin(user,pass)){
+                if(loggedInCustomer != null){
                     messageLabel.setText("Valid User");
+                    welcomeLabel.setText("Welcome" + loggedInCustomer.getName());
                 }
                 else{
                     messageLabel.setText("Invalid User");
@@ -75,15 +102,67 @@ public class Ecommerce extends Application {
         return loginPane;
     }
 
+    private GridPane footerBar() {
+        Button buyNowButton = new Button("Buy Now");
+
+        buyNowButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Product product = productList.getSelectedProduct();
+                boolean orderStatus = false;
+                Order order = new Order();
+                if(product != null && loggedInCustomer != null){
+                    order.placeOrder(loggedInCustomer, product);
+                    orderStatus = true;
+                }
+                if(orderStatus == true){
+                    showDialoge("Order Placed");
+                }
+                else{
+                    showDialoge("Error Occured");
+                }
+            }
+        });
+
+        GridPane footer = new GridPane();
+        footer.setTranslateY(headerLine+height);
+        footer.add(buyNowButton,0,0);
+
+        return footer;
+    }
+
     private Pane createContent(){
         Pane root = new Pane();
-        root.setPrefSize(500,300);  //set Size of the window
+        root.setPrefSize(width + 2 * headerLine,height+2 * headerLine);  //set Size of the window
 
+        bodyPane = new Pane();
+        bodyPane.setPrefSize(width,height);
+        bodyPane.setTranslateY(headerLine);
+        bodyPane.setTranslateX(10);
+
+        bodyPane.getChildren().add(loginPanel());
         //add header to pane
-        root.getChildren().addAll(headerBar(),loginPanel(),productList.getAllProducts() );
+        root.getChildren().addAll(
+                headerBar(),
+//                loginPanel(),
+//                productList.getAllProducts()
+                bodyPane,
+                footerBar()
+        );
         return root;
     }
 
+    private void showDialoge(String message){
+        Dialog<String> dialog = new Dialog<>();
+
+        dialog.setTitle("Confirmation");
+
+        ButtonType type = new ButtonType("Ok",ButtonBar.ButtonData.OK_DONE);
+        dialog.setContentText(message);
+
+        dialog.getDialogPane().getButtonTypes().add(type);
+        dialog.showAndWait();
+    }
     @Override
     public void start(Stage stage) throws IOException {
 //        FXMLLoader fxmlLoader = new FXMLLoader(Ecommerce.class.getResource("hello-view.fxml"));

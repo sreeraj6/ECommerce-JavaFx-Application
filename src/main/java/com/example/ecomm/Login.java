@@ -37,7 +37,7 @@ public class Login {
     }
 
 
-    public static boolean customerLogin(String userId, String password) {
+    public static Customer customerLogin(String userId, String password) {
         String encryptedPass = getEcryptedPassword(password);
         String query = "select * from customer where email = "+'"'+userId+'"'+" and password = "+'"' + encryptedPass+'"'+"";
         DatabaseConnection dbConn = new DatabaseConnection();
@@ -45,13 +45,17 @@ public class Login {
         try {
             ResultSet rs = dbConn.getQueryTable(query);
             if(rs != null && rs.next()){
-                return true;
+                return new Customer(
+                        rs.getInt("cid"),
+                        rs.getString("email"),
+                        rs.getString("email")
+                );
             }
         }
         catch (Exception e){
             e.printStackTrace();
         }
-        return false;
+        return null;
 
     }
 
