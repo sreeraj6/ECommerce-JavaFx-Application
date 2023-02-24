@@ -30,6 +30,8 @@ public class Ecommerce extends Application {
         //put search area and button
         TextField searchBar = new TextField();
         Button searchButton = new Button("Search");
+        searchBar.setPromptText("Search here");
+
         header.setHgap(10);
         searchButton.setOnAction(new EventHandler <ActionEvent>() {
             @Override
@@ -102,6 +104,73 @@ public class Ecommerce extends Application {
         return loginPane;
     }
 
+    private GridPane signup() {
+
+        Label userLabel = new Label("Enter name");
+        Label passLabel = new Label("Password");
+        Label emailLabel = new Label("Email");
+        Label mobileLabel = new Label("Mobile");
+        Label addressLabel = new Label("Address");
+
+        TextField userName = new TextField();
+        userName.setPromptText("Enter you name");
+
+        TextField emailFied = new TextField();
+        emailFied.setPromptText("Enter email id");
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Enter password");
+
+        TextField mobileField = new TextField();
+        mobileField.setPromptText("Enter mobile number");
+
+        TextField addressField = new TextField();
+        addressField.setPromptText("Enter your address");
+
+
+        Button signupButton = new Button("Signup");
+        signupButton.setStyle("-fx-background-color: MediumSeaGreen");
+
+
+        signupButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String username = userName.getText();
+                String password = passwordField.getText();
+                String email = emailFied.getText();
+                String mobile = mobileField.getText();
+                String address = addressField.getText();
+
+                boolean user = Signup.customerSignup(username,email,password,mobile,address);
+                if(user){
+                    showDialoge("user Signed up");
+                }
+                else {
+                    showDialoge("You are existing user");
+                }
+            }
+        });
+
+
+        GridPane signupPane = new GridPane();
+        signupPane.setTranslateY(50);
+        signupPane.setVgap(10);
+        signupPane.setHgap(10);
+
+        //add Label and input field
+        signupPane.add(userLabel,0,0);
+        signupPane.add(userName,1,0);
+        signupPane.add(emailLabel,0,1);
+        signupPane.add(emailFied,1,1);
+        signupPane.add(passLabel,0,2);
+        signupPane.add(passwordField,1,2);
+        signupPane.add(mobileLabel,0,3);
+        signupPane.add(mobileField,1,3);
+        signupPane.add(addressLabel,0,4);
+        signupPane.add(addressField,1,4);
+        signupPane.add(signupButton,1,5);
+        return signupPane;
+    }
     private GridPane footerBar() {
         Button buyNowButton = new Button("Buy Now");
 
@@ -125,6 +194,7 @@ public class Ecommerce extends Application {
         });
 
         GridPane footer = new GridPane();
+
         footer.setTranslateY(headerLine+height);
         footer.add(buyNowButton,0,0);
 
@@ -134,13 +204,14 @@ public class Ecommerce extends Application {
     private Pane createContent(){
         Pane root = new Pane();
         root.setPrefSize(width + 2 * headerLine,height+2 * headerLine);  //set Size of the window
-
+        root.setStyle("-fx-background-color: #96D4E7;");
         bodyPane = new Pane();
+
         bodyPane.setPrefSize(width,height);
         bodyPane.setTranslateY(headerLine);
         bodyPane.setTranslateX(10);
 
-        bodyPane.getChildren().add(loginPanel());
+        bodyPane.getChildren().add(signup());
         //add header to pane
         root.getChildren().addAll(
                 headerBar(),

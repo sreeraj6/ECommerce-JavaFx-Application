@@ -22,7 +22,7 @@ public class Login {
         return null;
     }
     //Encrypt password
-    private static String getEcryptedPassword(String password){
+    protected static String getEcryptedPassword(String password){
 
         try {
             BigInteger num = new BigInteger(1,getSha(password));
@@ -58,6 +58,7 @@ public class Login {
         return null;
 
     }
+
 
 
 }
